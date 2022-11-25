@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{empty name="messageData"}
+    当前消息不存在
+{else /}
+    <h1>{$messageData["title"]}</h1>
+    <p>{$messageData["create_date"]}</p>
+    <div>{$messageData["content"]}</div>
+{/empty}
+</body>
+</html>

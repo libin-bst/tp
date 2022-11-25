@@ -11,14 +11,25 @@
 
 use think\Route;
 
+/**
+ * 用户信息展示
+ */
 Route::get('user','user/user/index');
 
-Route::post('message/store','message/message/store');
+/**
+ * 信息展示
+ */
 Route::get('message/info','message/message/info');
+Route::get('message','message/message/index');
 
-Route::get('messageCustomer','message/messageCustomer/index');
-Route::post('messageCustomer/read','message/messageCustomer/read');
-Route::get('messageCustomer/getData','message/messageCustomer/getData');
+/**
+ * api 路由器
+ */
+Route::get('api/message/getUnreadData','api/message/getUnreadData');
+Route::post('api/message/store','api/message/store');
+Route::get('api/message/getInfo','api/message/getInfo');
+Route::get('api/message/listData','api/message/listData');
+Route::put('api/message/readData','api/message/readData');
 
 //return [
 //    '__pattern__' => [

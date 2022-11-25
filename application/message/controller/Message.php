@@ -1,48 +1,39 @@
 <?php
 namespace app\message\controller;
 
-use think\Db;
 use think\Request;
 use \think\Controller;
+use app\services\MessageService;
+use app\sdk\MessageSdk;
 
 class Message extends Controller
 {
-    /**
-     * 录入消息
-     */
-    public function store(Request $request)
+    protected $messageService;
+    protected $messageSdk;
+
+    public function __construct()
     {
-        $isSuccess=0;
-        // 启动事务
-        Db::startTrans();
-        try{
-            $param=$request->param();
-            $data = [];
-            $data["message_content"]=$param["message_content"];
-            $data["create_date"]=date("Y-m-d H:i:s");
-            $messageId=Db::table('message_text')->insertGetId($data);
-            if($messageId){
-                $data = [];
-                $data["sendId"]=$param["sendId"];
-                $data["recId"]=$param["recId"];
-                $data["messageId"]=$messageId;
-                $data["title"]=$param["title"];
-                $data["create_date"]=date("Y-m-d H:i:s");
-                Db::table('message')->insert($data);
-                Db::commit();
-                $isSuccess=1;
-            }else{
-                Db::rollback();
-            }
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-        }
-        if($isSuccess==1){
-            echo "录入成功";
-        }else{
-            echo "录入失败";
-        }
+        parent::__construct();
+        $this->messageService=new MessageService();
+        $this->messageSdk=new MessageSdk();
+    }
+
+    /**
+     * 消息获取
+     */
+    public function index(Request $request)
+    {
+        $paramsObj=paramsObj();
+        $paramsObj->mixed=1;
+        $checkResult=$this->messageService->listData($paramsObj);
+        $result=$checkResult["result"];
+
+        // 模板变量赋值
+        $this->assign('param',$request->param());
+        $this->assign('result',$result);
+
+        // 模板输出
+        return $this->fetch('index');
     }
 
     /**
@@ -52,31 +43,23 @@ class Message extends Controller
     {
         $param=$request->param();
 
-        $messageTextResult=Db::table('message_text')->where('messageId',$param["messageId"])->field("message_content,create_date")->find();
-        $messageResult=Db::table('message')->where('messageId',$param["messageId"])->field("title")->find();
+        $paramsObj=paramsObj();
+        $paramsObj->mixed=1;
+        $checkResult=$this->messageService->getInfo($paramsObj);
+        $infoResult=$checkResult["result"];
 
-        $messageData=[];
-        $messageData["title"]=$messageResult["title"];
-        $messageData["content"]=$messageTextResult["message_content"];
-        $messageData["create_date"]=$messageTextResult["create_date"];
+        $paramsObj=paramsObj();
+        $paramsObj->params=array(
+            "messageId"=>$param["messageId"],
+            "recId"=>$param["recId"],
+        );
+        $this->messageService->readData($paramsObj);
 
         // 模板变量赋值
-        $this->assign('recId',$param["recId"]);
-        $this->assign('messageId',$param["messageId"]);
-        $this->assign('messageData',$messageData);
-        //查询成功->更新读取信息
-        if(isset($messageResult["title"])){
-            $result=Db::table('message_customer')->where('customerId',$param["recId"])->where('messageId',$param["messageId"])->find();
-            if(!$result){
-                $data = [];
-                $data["customerId"]=$param["recId"];
-                $data["messageId"]=$param["messageId"];
-                $data["status"]=1;
-                Db::table('message_customer')->insert($data);
-            }
-        }
+        $this->assign('param',$param);
+        $this->assign('messageData',$infoResult);
         // 模板输出
-        return $this->fetch('index');
+        return $this->fetch('info');
     }
 
 }
