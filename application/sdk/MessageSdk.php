@@ -16,7 +16,7 @@ class MessageSdk
         $tansData["messageId"]=$messageId;
         $tansData=$this->paramSign($tansData);
         $submitUrl=$this->url."/api/message/getUnreadData";
-        $result=$this->curlSubmit($submitUrl,$tansData,1,"get");
+        $result=$this->curlSubmit($submitUrl,$tansData,2,"get");
         return $result;
     }
 
@@ -29,7 +29,7 @@ class MessageSdk
         $tansData["messageId"]=$messageId;
         $tansData=$this->paramSign($tansData);
         $submitUrl=$this->url."/api/message/getInfo";
-        $result=$this->curlSubmit($submitUrl,$tansData,1,"get");
+        $result=$this->curlSubmit($submitUrl,$tansData,2,"get");
         return $result;
     }
 
@@ -41,7 +41,7 @@ class MessageSdk
         $tansData["recId"]=$recId;
         $tansData=$this->paramSign($tansData);
         $submitUrl=$this->url."/api/message/listData";
-        $result=$this->curlSubmit($submitUrl,$tansData,1,"get");
+        $result=$this->curlSubmit($submitUrl,$tansData,2,"get");
         return $result;
     }
 
@@ -54,7 +54,7 @@ class MessageSdk
         $tansData["messageId"]=$messageId;
         $tansData=$this->paramSign($tansData);
         $submitUrl=$this->url."/api/message/readData";
-        $result=$this->curlSubmit($submitUrl,$tansData,1,"put");
+        $result=$this->curlSubmit($submitUrl,$tansData,2,"put");
         return $result;
     }
 
@@ -69,7 +69,7 @@ class MessageSdk
         $tansData["message_content"]=$message_content;
         $tansData=$this->paramSign($tansData);
         $submitUrl=$this->url."/api/message/store";
-        $result=$this->curlSubmit($submitUrl,$tansData,1,"post");
+        $result=$this->curlSubmit($submitUrl,$tansData,2,"post");
         return $result;
     }
 
