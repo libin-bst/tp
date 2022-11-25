@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/static/lib/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/static/lib/artTemplate/template-web.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/static/lib/layer/skin/layer.css" />
+    <script type="text/javascript" src="/static/lib/layer/layer.js"></script>
+
+    <script type="text/javascript" src="/static/lib/custom/log.js?v=2"></script>
+    <script type="text/javascript" src="/static/lib/custom/helper.js?v=2"></script>
+    <script type="text/javascript" src="/static/lib/custom/extends.js?v=2"></script>
+    <script type="text/javascript" src="/static/lib/custom/layout.js?v=2"></script>
+    <script type="text/javascript" src="/static/lib/custom/validForm.js?v=2"></script>
+
+    <script type="text/javascript" src="/static/js/app.js?v=2"></script>
+
+    <!--<link rel="stylesheet" type="text/css" href="/static/css/common.css?v=1" />-->
+</head>
+<body>
+    <style>
+        th{text-align:left;}
+    </style>
+    当前用户ID：{$recId}
+    <br />
+    <br />
+    <br />
+    <table>
+        <colgroup>
+            <col width="100px">
+            <col width="200px">
+            <col width="100px">
+            <col width="180px">
+            <col>
+        </colgroup>
+        <tr>
+            <th>消息ID</th>
+            <th >标题</th>
+            <th >状态</th>
+            <th >时间</th>
+            <th >操作</th>
+        </tr>
+        <tbody class="msgTbody">
+            {volist name="result" id="vo"}
+            <tr class="msgCon{$vo.messageId}">
+                <td>{$vo.messageId}</td>
+                <td>{$vo.title}</td>
+                <td>{$vo.status==1?"已读":"未读"}</td>
+                <td>{$vo.create_date}</td>
+                <td><a target="_blank" href="/message/info?recId={$recId}&messageId={$vo.messageId}">查看</a></td>
+            </tr>
+            {/volist}
+            <input type="hidden" class="lateMessageId" value="{$result[0]['messageId']?$result[0]['messageId']:0}" />
+            <input type="hidden" class="lateRecId" value="{$recId}" />
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        function clock()
+        {
+            recId=$(".lateRecId").val();
+            var msgId=$(".lateMessageId").val();
+            var url="/messageCustomer/getData?recId="+recId+"&messageId="+msgId;
+            $(".none").commonSubmit({"clickObj":$(this),"url":url,"callback":"msgRs","data":{}});
+        }
+        $(function ()
+        {
+            var int=self.setInterval("clock()",1000);
+        });
+    </script>
+</body>
+</html>
