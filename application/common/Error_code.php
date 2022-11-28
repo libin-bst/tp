@@ -10,7 +10,7 @@ class Error_code
     const  VERIFY_TOKEN_EMPTY ="103"; //token为空
 
     const  UNDEFINED_METHOD ="200"; //未定义方法
-    const  OP_FAIL ="200"; //操作失败
+    const  OP_FAIL ="201"; //操作失败
 
     const  SQL_ERROR ="300"; //sql错误
     const  SIGN_ERROR ="400"; //签名错误
